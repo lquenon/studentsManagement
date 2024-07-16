@@ -4,7 +4,7 @@ from tkinter import messagebox
 
 root = tk.Tk()
 root.title("Système de gestion d'étudiants")
-root.geometry("1200x780")
+root.geometry("600x400")
 
 # fonctions CRUD en relation avec les boutons
 # définir avant appel
@@ -64,20 +64,20 @@ def clear_entries():
 # Ajout des éléments de saisie et étiquettes
 
 tk.Label(root, text="Nom:").grid(row=0, column=0, padx=10, pady=10)
-name_entry = tk.Entry(root,  width=100)
+name_entry = tk.Entry(root,  width=75)
 name_entry.grid(row=0, column=1, padx=10, pady=10)
 
 tk.Label(root, text="Âge:").grid(row=1, column=0, padx=10, pady=10)
-age_entry = tk.Entry(root, width=100)
+age_entry = tk.Entry(root, width=75)
 age_entry.grid(row=1, column=1, padx=10, pady=10)
 
 tk.Label(root, text="Classe:").grid(row=2, column=0, padx=10, pady=10)
-class_entry = tk.Entry(root, width=100)
+class_entry = tk.Entry(root, width=75)
 class_entry.grid(row=2, column=1, padx=10, pady=10)
 
 # Création d'une frame pour les boutons
 button_frame = tk.Frame(root)
-button_frame.grid(row=3, column=0, columnspan=3, pady=10)
+button_frame.grid(row=3, column=0, columnspan=3, pady=10, sticky="E")
 
 # Ajouter des boutons dans la frame avec pack, alignés à droite
 add_button = tk.Button(button_frame, text="Ajouter", command=add_student)
