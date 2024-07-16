@@ -2,6 +2,16 @@
 import tkinter as tk
 from tkinter import messagebox
 
+from sqlalchemy import create_engine, Column, Integer, String
+from sqlalchemy.orm import declarative_base, sessionmaker
+
+# Configuration de la base de données
+engine = create_engine('sqlite:///students.db')
+Base = declarative_base()
+Session = sessionmaker(bind=engine)
+session = Session()
+
+# initialisation de la fenêtre principale de l'application
 root = tk.Tk()
 root.title("Système de gestion d'étudiants")
 root.geometry("600x400")
@@ -9,7 +19,17 @@ root.geometry("600x400")
 # fonctions CRUD en relation avec les boutons
 # définir avant appel
 
-students = []
+# students = []
+
+class Student(Base):
+    __tablename__ = 'students'
+    id = Column(Integer, primary_key=True)
+    name = Column(String(50), nullable=False)
+    age = Column(Integer, nullable=False)
+    student_class = Column(String(20), nullable=False)
+
+# Créez la base de données et les tables
+Base.metadata.create_all(engine)
 
 def add_student():
     # print("Ajout")
@@ -17,44 +37,73 @@ def add_student():
     age = age_entry.get()
     student_class = class_entry.get()
     if name and age and student_class:
-        students.append({"name": name, "age": age, "class": student_class})
-        messagebox.showinfo("Succès", "Étudiant ajouté avec succès")
+    #     students.append({"name": name, "age": age, "class": student_class})
+    #     messagebox.showinfo("Succès", "Étudiant ajouté avec succès")
+    #     clear_entries()
+    # else:
+    #     messagebox.showerror("Erreur", "Tous les champs sont obligatoires")
+        new_student = Student(name=name, age=int(age), student_class=student_class)
+        session.add(new_student)
+        session.commit()
+        tk.messagebox.showinfo("Succès", "Étudiant ajouté avec succès")
         clear_entries()
     else:
-        messagebox.showerror("Erreur", "Tous les champs sont obligatoires")
-
+        tk.messagebox.showerror("Erreur", "Tous les champs sont obligatoires")
 
 def view_students():
     # print("Consulation")
+    students = session.query(Student).all()
     view_window = tk.Toplevel(root)
     view_window.title("Liste des Étudiants")
     for i, student in enumerate(students):
-        tk.Label(view_window, text=f"{student['name']} - {student['age']} - {student['class']}").grid(row=i, column=0)
+        tk.Label(view_window, text=f"{student.name} - {student.age} - {student.student_class}").grid(row=i, column=0)
+
 
 def update_student():
     # print("Mise à jour")
+    # name = name_entry.get()
+    # age = age_entry.get()
+    # student_class = class_entry.get()
+    # for student in students:
+    #     if student['name'] == name:
+    #         student['age'] = age
+    #         student['class'] = student_class
+    #         messagebox.showinfo("Succès", "Étudiant mis à jour avec succès")
+    #         clear_entries()
+    #         return
+    # messagebox.showerror("Erreur", "Étudiant non trouvé")
     name = name_entry.get()
     age = age_entry.get()
     student_class = class_entry.get()
-    for student in students:
-        if student['name'] == name:
-            student['age'] = age
-            student['class'] = student_class
-            messagebox.showinfo("Succès", "Étudiant mis à jour avec succès")
-            clear_entries()
-            return
-    messagebox.showerror("Erreur", "Étudiant non trouvé")
+    student = session.query(Student).filter_by(name=name).first()
+    if student:
+        student.age = int(age)
+        student.student_class = student_class
+        session.commit()
+        tk.messagebox.showinfo("Succès", "Étudiant mis à jour avec succès")
+        clear_entries()
+    else:
+        tk.messagebox.showerror("Erreur", "Étudiant non trouvé")
 
 def delete_student():
-    # print("Suppression")
+    # # print("Suppression")
+    # name = name_entry.get()
+    # for student in students:
+    #     if student['name'] == name:
+    #         students.remove(student)
+    #         messagebox.showinfo("Succès", "Étudiant supprimé avec succès")
+    #         clear_entries()
+    #         return
+    # messagebox.showerror("Erreur", "Étudiant non trouvé")
     name = name_entry.get()
-    for student in students:
-        if student['name'] == name:
-            students.remove(student)
-            messagebox.showinfo("Succès", "Étudiant supprimé avec succès")
-            clear_entries()
-            return
-    messagebox.showerror("Erreur", "Étudiant non trouvé")
+    student = session.query(Student).filter_by(name=name).first()
+    if student:
+        session.delete(student)
+        session.commit()
+        tk.messagebox.showinfo("Succès", "Étudiant supprimé avec succès")
+        clear_entries()
+    else:
+        tk.messagebox.showerror("Erreur", "Étudiant non trouvé")
 
 def clear_entries():
     name_entry.delete(0, tk.END)
