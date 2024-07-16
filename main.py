@@ -19,8 +19,6 @@ root.geometry("600x400")
 # fonctions CRUD en relation avec les boutons
 # définir avant appel
 
-# students = []
-
 class Student(Base):
     __tablename__ = 'students'
     id = Column(Integer, primary_key=True)
@@ -37,11 +35,6 @@ def add_student():
     age = age_entry.get()
     student_class = class_entry.get()
     if name and age and student_class:
-    #     students.append({"name": name, "age": age, "class": student_class})
-    #     messagebox.showinfo("Succès", "Étudiant ajouté avec succès")
-    #     clear_entries()
-    # else:
-    #     messagebox.showerror("Erreur", "Tous les champs sont obligatoires")
         new_student = Student(name=name, age=int(age), student_class=student_class)
         session.add(new_student)
         session.commit()
@@ -60,18 +53,6 @@ def view_students():
 
 
 def update_student():
-    # print("Mise à jour")
-    # name = name_entry.get()
-    # age = age_entry.get()
-    # student_class = class_entry.get()
-    # for student in students:
-    #     if student['name'] == name:
-    #         student['age'] = age
-    #         student['class'] = student_class
-    #         messagebox.showinfo("Succès", "Étudiant mis à jour avec succès")
-    #         clear_entries()
-    #         return
-    # messagebox.showerror("Erreur", "Étudiant non trouvé")
     name = name_entry.get()
     age = age_entry.get()
     student_class = class_entry.get()
@@ -86,15 +67,6 @@ def update_student():
         tk.messagebox.showerror("Erreur", "Étudiant non trouvé")
 
 def delete_student():
-    # # print("Suppression")
-    # name = name_entry.get()
-    # for student in students:
-    #     if student['name'] == name:
-    #         students.remove(student)
-    #         messagebox.showinfo("Succès", "Étudiant supprimé avec succès")
-    #         clear_entries()
-    #         return
-    # messagebox.showerror("Erreur", "Étudiant non trouvé")
     name = name_entry.get()
     student = session.query(Student).filter_by(name=name).first()
     if student:
